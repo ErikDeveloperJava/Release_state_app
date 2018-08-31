@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Real Estate</title>
+
+    <!-- Bootstrap -->
+    <link href="https://fonts.googleapis.com/css?family=Libre+Franklin:100,200,300,400,500,700" rel="stylesheet">
+    <!--FONT AWESOME-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/lib/animate.css" rel="stylesheet">
+    <link href="/lib/selectric/selectric.css" rel="stylesheet">
+    <link href="/lib/swiper/css/swiper.min.css" rel="stylesheet">
+    <link href="/lib/aos/aos.css" rel="stylesheet">
+    <link href="/lib/Magnific-Popup/magnific-popup.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+    <script src="/lib/jquery-3.2.1.min.js"></script>
+    <script src="/lib/popper.min.js"></script>
+    <script src="/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/lib/selectric/jquery.selectric.js"></script>
+    <script src="/lib/swiper/js/swiper.min.js"></script>
+    <script src="/lib/aos/aos.js"></script>
+    <script src="/lib/Magnific-Popup/jquery.magnific-popup.min.js"></script>
+    <script src="/lib/sticky-sidebar/ResizeSensor.min.js"></script>
+    <script src="/lib/sticky-sidebar/theia-sticky-sidebar.min.js"></script>
+    <script src="/lib/lib.js"></script>
+
+</head>
+<body>
+<div id="main">
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-over absolute-top" id="menu">
+        <div class="container">
+            <a class="navbar-brand" href="index.html"><span class="icon-uilove icon-uilove-realestate"></span></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#menu-content"
+                    aria-controls="menu-content" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="menu-content">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item ">
+                        <a class="nav-link" href="/" >
+                            Home
+                        </a>
+
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link " href="/listings">
+                            Listings
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " href="/users" >
+                            Users
+                        </a>
+                    </li>
+                    <li th:if="${currentUser eq null}" class="nav-item ">
+                        <a class="nav-link " href="/signIn">
+                            Login/Register
+                        </a>
+                    </li>
+                </ul>
+
+                <ul class="navbar-nav ml-auto">
+
+                    <li class="nav-item dropdown user-account" th:if="${currentUser != null}">
+                        <a class="nav-link dropdown-toggle" href="/user/profile" role="button" data-toggle="dropdown"
+                           aria-haspopup="true" aria-expanded="false">
+                            <span class="user-image" th:style="'background-image:url(/users/' + ${currentUser.picUrl} +')'"></span>
+                            <span th:text="${currentUser.name}">name</span>
+                        </a>
+                        <div class="dropdown-menu">
+                            <a href="/user/profile" class="dropdown-item">My profile</a>
+                            <a href="/logout" class="dropdown-item">Logout</a>
+                        </div>
+                    </li>
+                    <li class="nav-item"><a class="nav-link nav-btn" href="/listing/add"><span><i
+                            class="fa fa-plus" aria-hidden="true"></i> Add listing</span></a></li>
+                </ul>
+
+            </div>
+        </div>
+    </nav>
+    <div class="home-search">
+        <div class="main search-form v2">
+            <div class="container">
+                <div class="row justify-content-md-center">
+                    <div class="col-md-12 col-lg-10">
+                        <div class="heading">
+                            <h2>Find your new home</h2>
+                            <h3>We will help you to find the best places to spend time in any city in the world.</h3>
+                        </div>
+                        <form action="listing/search">
+                            <div class="row justify-content-md-center">
+                                <div class="col-md-9 col-lg-8">
+                                    <div class="input-group input-group-lg">
+                                        <input type="text" class="form-control"
+                                               placeholder="Enter listing title" name="title">
+                                        <span class="input-group-append">
+                                            <button class="btn btn-primary btn-lg" type="submit">Search!</button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="content" class="pt0 pb0">
+        <div class="feature-box centered gray">
+            <div>
+                <div class="container">
+                    <div class="row justify-content-md-center">
+                        <div class="col col-lg-12 col-xl-10">
+                            <div class="main-title"><span>New Listings</span></div>
+                            <div class="clearfix"></div>
+                            <div class="mt50 mb50">
+                                <div class="featured-gallery v2 item-listing grid">
+                                    <div  class="row" th:if="${#lists.size(listings) > 0}" >
+                                        <div class="col-md-6">
+                                            <div class="item item-lg">
+                                                <div class="item-image"
+                                                     th:style="'background-image:url(/listings/' + ${listings[0].picUrl} + ')'"><a
+                                                        th:href="@{/listing/{id}(id = ${listings[0].id})}">
+                                                    <div class="item-meta">
+                                                        <div class="item-info">
+                                                            <h3 class="item-title" th:text="${listings[0].title}">title</h3>
+                                                        </div>
+                                                        <div class="item-price" th:text="${listings[0].price}">
+                                                        </div>
+                                                    </div>
+                                                    <div class="item-badges">
+                                                        <div class="item-badge-right" th:text="'for ' + ${#strings.toLowerCase(listings[0].listingType)}"></div>
+                                                    </div>
+                                                </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6" th:if="${#lists.size(listings) > 1}">
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <div class="item item-md">
+                                                        <div class="item-image"
+                                                             th:style="'background-image:url(/listings/' + ${listings[1].picUrl} + ')'"><a
+                                                                th:href="@{/listing/{id}(id = ${listings[1].id})}">
+                                                            <div class="item-meta">
+                                                                <div class="item-info">
+                                                                    <h3 class="item-title" th:text="${listings[1].title}">title</h3>
+                                                                </div>
+                                                                <div class="item-price" th:text="${listings[1].price}">
+                                                                </div>
+                                                            </div>
+                                                            <div class="item-badges">
+                                                                <div class="item-badge-right" th:text="'for ' + ${#strings.toLowerCase(listings[1].listingType)}"></div>
+                                                            </div>
+                                                        </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <th:block th:each="listing : ${listings}" th:if="${listingStat.index > 1}">
+                                                    <div class="col-sm-6">
+                                                        <div class="item item-sm">
+                                                            <div class="item-image"
+                                                                 th:style="'background-image:url(/listings/' + ${listing.picUrl} + ')'">
+                                                                <a
+                                                                    th:href="@{/listing/{id}(id = ${listing.id})}">
+                                                                <div class="item-meta">
+                                                                    <div class="item-info">
+                                                                        <h3 class="item-title" th:text="${listing.title}">title</h3>
+                                                                    </div>
+                                                                    <div class="item-price" th:text="${listing.price}">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="item-badges">
+                                                                    <div class="item-badge-right" th:text="'for ' + ${#strings.toLowerCase(listing.listingType)}"></div>
+                                                                </div>
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </th:block>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center"><a href="/listings" class="btn btn-xlg btn-link">View All</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="feature-box centered">
+            <div>
+                <div class="container">
+                    <div class="row justify-content-md-center">
+                        <div class="col col-lg-12 col-xl-10">
+                            <div class="main-title"><span>What our clients say</span></div>
+                            <div class="swiper-container testimonials">
+                                <div class="swiper-wrapper">
+                                    <th:block th:each="user : ${users}" th:if="${#strings.equals(user.userType,'USER')}">
+                                        <div class="swiper-slide">
+                                            <div class="item content-box centered">
+                                                <div class="image">
+                                                    <a th:href="@{/user/{id}(id = ${user.id})}">
+                                                        <img class="rounded-circle" th:src="@{/users/{img}(img = ${user.picUrl})}" width="180" alt="">
+                                                    </a>
+                                                </div>
+                                                <h4>Thank you for your quick and clear responses. They are much appreciated.
+                                                    This was a site that needed to go up fast and it has – customizations
+                                                    and all!</h4>
+                                                <div class="caption">The Brown Family</div>
+                                            </div>
+                                        </div>
+                                    </th:block>
+                                </div>
+                                <!-- Add Arrows -->
+                                <div class="swiper-button-next"></div>
+                                <div class="swiper-button-prev"></div>
+                            </div>
+                            <script>
+                                var swiper = new Swiper('.swiper-container', {
+                                    loop: true,
+                                    centeredSlides: true,
+                                    autoplay: {
+                                        delay: 5000,
+                                        disableOnInteraction: false,
+                                    },
+                                    pagination: {
+                                        el: '.swiper-pagination',
+                                        clickable: true,
+                                    },
+                                    navigation: {
+                                        nextEl: '.swiper-button-next',
+                                        prevEl: '.swiper-button-prev',
+                                    },
+                                });
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="feature-box centered pb0">
+            <div>
+                <div class="container">
+                    <div class="row justify-content-md-center">
+                        <div class="col col-lg-10 col-xl-10">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="text-center mt50 mb50">
+                                        <div class="main-title"><span>Connect with us from anywhere</span></div>
+                                        <div class="main-title-description">Download the mobile app and enjoy the
+                                            smoothest experience
+                                        </div>
+                                        <img src="img/store/apple.svg" width="120" alt=""> <img
+                                            src="img/store/google.svg" width="120" alt=""></div>
+                                </div>
+                                <div class="col-md-6"><img src="img/demo/mobile-app-hero.png" class="img-fluid" alt="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button class="btn btn-primary btn-circle" id="to-top"><i class="fa fa-angle-up"></i></button>
+    <footer id="footer" class="bg-light footer-light">
+        <div class="container container-1000">
+            <div class="row">
+                <div class="col-lg-3">
+                    <p><span class="icon-uilove icon-uilove-realestate"></span></p>
+                    <address class="mb-3">
+                        <strong>Twitter, Inc.</strong><br>
+                        1355 Market Street, Suite 900<br>
+                        San Francisco, CA 94103<br>
+                        <abbr title="Phone">P:</abbr> (123) 456-7890
+                    </address>
+                    <div class="footer-social mb-4">
+                        <a href="https://www.twitter.com" class="ml-2 mr-2"><span
+                            class="fa fa-twitter"></span></a> <a href="https://www.facebook.com" class="ml-2 mr-2"><span
+                            class="fa fa-facebook"></span></a> <a href="https://www.instagram.com" class="ml-2 mr-2"><span
+                            class="fa fa-instagram"></span></a></div>
+                </div>
+            </div>
+            <div class="footer-credits d-lg-flex justify-content-lg-between align-items-center">
+                <div>© 2018 UILOVE Inc. All Rights Reserved</div>
+            </div>
+        </div>
+    </footer>
+</div>
+</body>
+</html>

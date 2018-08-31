@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head id="head">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Real Estate</title>
+
+    <!-- Bootstrap -->
+    <link href="https://fonts.googleapis.com/css?family=Libre+Franklin:100,200,300,400,500,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/lib/animate.css" rel="stylesheet">
+    <link href="/lib/selectric/selectric.css" rel="stylesheet">
+    <link href="/lib/swiper/css/swiper.min.css" rel="stylesheet">
+    <link href="/lib/aos/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="/lib/photoswipe/photoswipe.css">
+    <link rel="stylesheet" href="/lib/photoswipe/default-skin/default-skin.css">
+    <link href="/css/style.css" rel="stylesheet">
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="/lib/jquery-3.2.1.min.js"></script>
+    <script src="/lib/popper.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/lib/selectric/jquery.selectric.js"></script>
+    <script src="/lib/swiper/js/swiper.min.js"></script>
+    <script src="/lib/aos/aos.js"></script>
+    <script src="/lib/sticky-sidebar/ResizeSensor.min.js"></script>
+    <script src="/lib/sticky-sidebar/theia-sticky-sidebar.min.js"></script>
+    <script id="img-js1" src="/lib/photoswipe/photoswipe.min.js"></script>
+    <script id="img-js2" src="/lib/photoswipe/photoswipe-ui-default.min.js"></script>
+    <script src="/lib/lib.js"></script>
+
+</head>
+<body id="body">
+<div id="main">
+    <nav class="navbar navbar-expand-lg navbar-dark" id="menu">
+        <div class="container">
+            <a class="navbar-brand" href="index.html"><span class="icon-uilove icon-uilove-realestate"></span></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#menu-content"
+                    aria-controls="menu-content" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="menu-content">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item ">
+                        <a class="nav-link" href="/" >
+                            Home
+                        </a>
+
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link " href="/listings">
+                            Listings
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " href="/users" >
+                            Users
+                        </a>
+                    </li>
+                    <li th:if="${currentUser eq null}" class="nav-item ">
+                        <a class="nav-link " href="/signIn">
+                            Login/Register
+                        </a>
+                    </li>
+                </ul>
+
+                <ul class="navbar-nav ml-auto">
+
+                    <li class="nav-item dropdown user-account" th:if="${currentUser != null}">
+                        <a class="nav-link dropdown-toggle" href="/user/profile" role="button" data-toggle="dropdown"
+                           aria-haspopup="true" aria-expanded="false">
+                            <span class="user-image" th:style="'background-image:url(/users/' + ${currentUser.picUrl} +')'"></span>
+                            <span th:text="${currentUser.name}">name</span>
+                        </a>
+                        <div class="dropdown-menu">
+                            <a href="/user/profile" class="dropdown-item">My profile</a>
+                            <a href="/logout" class="dropdown-item">Logout</a>
+                        </div>
+                    </li>
+                    <li class="nav-item"><a class="nav-link nav-btn" href="/listing/add"><span><i
+                            class="fa fa-plus" aria-hidden="true"></i> Add listing</span></a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row justify-content-md-center">
+            <div class="col col-md-12 col-lg-12 col-xl-10">
+                <ol class="breadcrumb">
+                </ol>
+                <div class="page-header bordered mb0">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h1>
+                                <span th:text="${listing.title}"></span>
+                                <span class="label label-bordered" th:text="'For ' + ${#strings.toLowerCase(listing.listingType)}">For sale</span>
+                            </h1>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="price" th:text="'$' + ${listing.price}">
+                                £250,000
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="content" class="item-single">
+        <div class="container">
+            <div class="row justify-content-md-center">
+                <div class="col col-md-12 col-lg-12 col-xl-10">
+                    <div class="row row justify-content-md-center has-sidebar">
+                        <div class="col-md-7 col-lg-8">
+                            <div>
+                                <div class="item-gallery">
+                                    <div class="swiper-container gallery-top" data-pswp-uid="1">
+                                        <div id="img-blog1" class="swiper-wrapper lazyload">
+
+                                            <th:block th:each="img : ${images}">
+                                                <div th:id="${img.id} + '-div1'" class="swiper-slide">
+                                                    <figure itemprop="associatedMedia" itemscope
+                                                            itemtype="http://schema.org/ImageObject"><a
+                                                            th:href="@{/listings/{img}(img = ${img.url})}" itemprop="contentUrl"
+                                                            data-size="2000x1414">
+                                                        <img th:src="@{/listings/{img}(img = ${img.url})}"
+                                                             class="img-fluid swiper-lazy"
+                                                             alt="Drawing Room"> </a>
+                                                    </figure>
+                                                </div>
+
+                                            </th:block>
+                                        </div>
+                                        <div class="swiper-button-next"></div>
+                                        <div class="swiper-button-prev"></div>
+                                    </div>
+                                    <div class="swiper-container gallery-thumbs">
+                                        <div id="img-blog2" class="swiper-wrapper">
+                                            <th:block th:each="img : ${images}">
+                                                <div th:id="${img.id} + '-div2'"  class="swiper-slide">
+                                                    <img th:if="${currentUser ne null} and ${currentUser.id} eq ${listing.user.id}"
+                                                         style="cursor: pointer" th:id="${img.id} + '-d'" class="delete-img" src="/icons/delete.png">
+                                                    <img th:if="${currentUser ne null} and ${currentUser.id} eq ${listing.user.id}" style="cursor: pointer" th:id="${img.id} + '-m'" class="main-img" src="/icons/home.png">
+                                                    <img th:src="@{/listings/{img}(img = ${img.url})}" th:id="${img.url}" class="img-fluid" alt="">
+                                                </div>
+                                            </th:block>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <ul class="item-features">
+                                        <li><span th:text="${listing.area}"></span> sq m</li>
+                                        <li><span th:text="${listing.mlsNo}">3</span> mlsNo</li>
+                                        <li><span th:text="${listing.bedrooms}">1</span> Bedrooms</li>
+                                        <li><span th:text="${listing.bathrooms}">2</span> Bathrooms</li>
+                                    </ul>
+                                    <div class="item-description">
+                                        <h3 class="headline">Listing Description</h3>
+                                        <p th:text="${listing.description}"></p>
+                                    </div>
+                                    <h3 class="headline">Listing Features</h3>
+                                    <ul class="checked_list feature-list">
+                                        <th:block th:each="feature : ${features}">
+                                            <li th:text="${feature.name}"></li>
+                                        </th:block>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-5 col-lg-4">
+                            <div id="sidebar" class="sidebar-right">
+                                <div class="sidebar_inner">
+                                    <div th:if="${currentUser ne null} and ${currentUser.id} eq ${listing.user.id}" id="feature-list" role="tablist">
+                                        <div class="card">
+                                            <div class="card-header" role="tab" id="headingOne">
+                                                <h4 class="panel-title">My Listing</h4>
+                                            </div>
+                                            <div id="specification" class="panel-collapse collapse show"
+                                                 role="tabpanel">
+                                                <div class="card-body">
+                                                    <table class="table v1">
+                                                        <tr>
+                                                            <form id="listing-img-form" action="/listing/upload" enctype="multipart/form-data" method="post">
+                                                                <input type="hidden" id="listingId" name="listingId" th:value="${listing.id}">
+                                                                <input  type="file" name="image" id="img" class="inputfile register-input" />
+                                                                <label style="cursor: pointer;color:#584b8d" for="img">upload a photo</label><br/>
+                                                            </form>
+                                                        </tr>
+                                                        <tr>
+                                                            <a  style="font-size: 20px"
+                                                               th:href="@{/listing/delete/{id}(id = ${listing.id})}">Delete Listing</a>
+                                                        </tr>
+                                                        <tr>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div th:if="${currentUser eq null} or ${currentUser.id} ne ${listing.user.id}" class="card shadow">
+                                        <h5 class="subheadline mt-0  mb-0">For Sale by Agent</h5>
+                                        <div class="media">
+                                            <div class="media-left">
+                                                <a th:href="@{/user/{id}(id = ${listing.user.id})}">
+                                                    <img class="media-object rounded-circle"
+                                                         th:src="@{/users/{img}(img = ${listing.user.picUrl})}" width="64" height="64" alt="">
+                                                </a>
+                                            </div>
+                                            <div class="media-body">
+                                                <h4 class="media-heading">
+                                                    <a th:href="@{/user/{id}(id = ${listing.user.id})}" th:text="${listing.user.name}">name</a>
+                                                </h4>
+                                                <p>
+                                                    <a th:href="@{/user/{id}(id = ${listing.user.id})}" class="btn btn-sm btn-light">View Profile</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Lead Form Modal -->
+    <button class="btn btn-primary btn-circle" id="to-top"><i class="fa fa-angle-up"></i></button>
+    <footer id="footer" class="bg-light footer-light">
+        <div class="container container-1000">
+            <div class="row">
+                <div class="col-lg-3">
+                    <p><span class="icon-uilove icon-uilove-realestate"></span></p>
+                    <address class="mb-3">
+                        <strong>Twitter, Inc.</strong><br>
+                        1355 Market Street, Suite 900<br>
+                        San Francisco, CA 94103<br>
+                        <abbr title="Phone">P:</abbr> (123) 456-7890
+                    </address>
+                    <div class="footer-social mb-4">
+                        <a href="https://www.twitter.com" class="ml-2 mr-2"><span
+                                class="fa fa-twitter"></span></a> <a href="https://www.facebook.com" class="ml-2 mr-2"><span
+                            class="fa fa-facebook"></span></a> <a href="https://www.instagram.com" class="ml-2 mr-2"><span
+                            class="fa fa-instagram"></span></a></div>
+                </div>
+            </div>
+            <div class="footer-credits d-lg-flex justify-content-lg-between align-items-center">
+                <div>© 2018 UILOVE Inc. All Rights Reserved</div>
+            </div>
+        </div>
+    </footer>
+</div>
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element, as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. PhotoSwipe keeps only 3 slides in DOM to save memory. -->
+        <!-- don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo https://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<script id="img-js" src="/js/img.js"></script>
+<script th:if="${currentUser ne null} and ${currentUser.id} eq ${listing.user.id}" src="/js/listing-details.js"></script>
+</body>
+</html>

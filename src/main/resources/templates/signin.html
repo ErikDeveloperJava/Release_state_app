@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Real Estate</title>
+
+    <!-- Bootstrap -->
+    <link href="https://fonts.googleapis.com/css?family=Libre+Franklin:100,200,300,400,500,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/lib/animate.css" rel="stylesheet">
+    <link href="/lib/selectric/selectric.css" rel="stylesheet">
+    <link href="/lib/aos/aos.css" rel="stylesheet">
+    <link href="/lib/Magnific-Popup/magnific-popup.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="/lib/jquery-3.2.1.min.js"></script>
+    <script src="/lib/popper.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/lib/selectric/jquery.selectric.js"></script>
+    <script src="/lib/aos/aos.js"></script>
+    <script src="/lib/Magnific-Popup/jquery.magnific-popup.min.js"></script>
+    <script src="/lib/sticky-sidebar/ResizeSensor.min.js"></script>
+    <script src="/lib/sticky-sidebar/theia-sticky-sidebar.min.js"></script>
+    <script src="/lib/lib.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("#login-show").on("click",function () {
+                $(".register-errors").text("");
+                $(".register-input").val("");
+                $("#register-show").attr("class","nav-link");
+                $("#login-show").attr("class","nav-link active");
+                $("#register-form").hide();
+                $("#login-form").show();
+            });
+
+            $("#register-show").on("click",function () {
+                $("#loginError").empty();
+                $(".login-input").val("");
+                $("#login-show").attr("class","nav-link");
+                $("#register-show").attr("class","nav-link active");
+                $("#login-form").hide();
+                $("#register-form").show();
+            })
+        })
+    </script>
+</head>
+<body>
+<div id="main">
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-over absolute-top" id="menu">
+        <div class="container">
+            <a class="navbar-brand" href="index.html"><span class="icon-uilove icon-uilove-realestate"></span></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#menu-content"
+                    aria-controls="menu-content" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="menu-content">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item ">
+                        <a class="nav-link" href="/" >
+                            Home
+                        </a>
+
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link " href="/listings">
+                            Listings
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " href="/users" >
+                            Users
+                        </a>
+                    </li>
+                    <li  class="nav-item">
+                        <a class="nav-link " href="/signIn">
+                            Login/Register
+                        </a>
+                    </li>
+                </ul>
+
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item"><a class="nav-link nav-btn" href="/listing/add"><span><i
+                            class="fa fa-plus" aria-hidden="true"></i> Add listing</span></a></li>
+                </ul>
+
+            </div>
+        </div>
+    </nav>
+
+    <br/>
+    <div  class="container">
+        <div class="row justify-content-md-center">
+            <div class="col col-md-12 col-lg-10 col-xl-8">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                    </ol>
+                </nav>
+                <div class="page-header">
+                    <h1>Please sign in or register</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="content">
+        <div class="container">
+            <div class="row justify-content-md-center align-items-center">
+                <div class="col col-md-6  col-lg-5 col-xl-4">
+                    <ul class="nav nav-tabs tab-lg" role="tablist">
+                        <li th:if="${#strings.equals(#request.getRequestURI(),'/signIn')}" role="presentation" class="nav-item"><a  id="login-show" class="nav-link active" style="cursor: pointer">Sign In</a></li>
+                        <li th:if="${#strings.equals(#request.getRequestURI(),'/register')}" role="presentation" class="nav-item"><a  id="login-show" class="nav-link" style="cursor: pointer">Sign In</a></li>
+                        <li th:if="${#strings.equals(#request.getRequestURI(),'/register')}" role="presentation" class="nav-item"><a id="register-show" class="nav-link active" style="cursor: pointer">Register</a>
+                        <li th:if="${#strings.equals(#request.getRequestURI(),'/signIn')}" role="presentation" class="nav-item"><a id="register-show" class="nav-link" style="cursor: pointer">Register</a>
+                        </li>
+                    </ul>
+                    <div id="login-form" th:if="${#strings.equals(#request.getRequestURI(),'/signIn')}" class="tab-content">
+                        <div role="tabpanel" class="tab-pane active">
+                            <span th:if="${#request.getParameter('error') ne null}"
+                                  style="color: red" id="loginError">you entered wrong username or password</span>
+                            <form action="/signIn" method="post">
+                                <div class="form-group">
+                                    <label for="email">Email address</label>
+                                    <input type="email" id="email" class="form-control form-control-lg login-input"
+                                           placeholder="Email" name="email">
+                                </div>
+                                <div class="form-group">
+                                    <label for="password">Password</label>
+                                    <input type="password" id="password" class="form-control form-control-lg login-input"
+                                           placeholder="Password" name="password">
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-lg">Sign In</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div id="login-form" th:if="${#strings.equals(#request.getRequestURI(),'/register')}" style="display: none" class="tab-content">
+                            <div role="tabpanel" class="tab-pane active">
+                            <span th:if="${#request.getParameter('error') ne null}"
+                                  style="color: red" id="loginError">you entered wrong username or password</span>
+                                <form action="/signIn" method="post">
+                                    <div class="form-group">
+                                        <label for="email">Email address</label>
+                                        <input type="email" id="email" class="form-control form-control-lg login-input"
+                                               placeholder="Email" name="email">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="password">Password</label>
+                                        <input type="password" id="password" class="form-control form-control-lg login-input"
+                                               placeholder="Password" name="password">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-lg">Sign In</button>
+                                </form>
+                            </div>
+                        </div>
+
+                    <div id="register-form" th:if="${#strings.equals(#request.getRequestURI(),'/register')}" class="tab-content">
+                        <div role="tabpanel" class="tab-pane active">
+                            <form action="/register" method="post" th:object="${form}" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <span style="color: red" class="register-errors" th:errors="*{name}"></span><br/>
+                                    <label for="name">Your Name</label>
+                                    <input type="text" id="name" class="form-control form-control-lg register-input"
+                                           placeholder="Your Name" th:field="*{name}">
+                                </div>
+                                <div class="form-group">
+                                    <span style="color: red" class="register-errors" th:errors="*{email}"></span><br/>
+                                    <label for="email">Email address</label>
+                                    <input type="email" id="email" class="form-control form-control-lg register-input"
+                                           placeholder="Email" th:field="*{email}">
+                                </div>
+                                <div class="form-group">
+                                    <span style="color: red" th:errors="*{password}" class="register-errors"></span><br/>
+                                    <label for="password">Password</label>
+                                    <input type="password" id="password" class="form-control form-control-lg register-input"
+                                           placeholder="Password" th:field="*{password}">
+                                </div>
+                                <div class="form-group">
+                                    <span style="color: red" th:errors="*{image}" class="register-errors"></span><br/>
+                                    <input  type="file" th:field="*{image}" id="file" class="inputfile register-input" />
+                                    <label style="cursor: pointer" for="file" >Choose a photo</label><br/>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-lg">Register</button>
+                            </form>
+                        </div>
+                    </div>
+                        <div id="register-form" th:if="${#strings.equals(#request.getRequestURI(),'/signIn')}" style="display: none" class="tab-content">
+                        <div role="tabpanel" class="tab-pane active">
+                            <form action="/register" method="post" th:object="${form}" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <span style="color: red" class="register-errors" th:errors="*{name}"></span><br/>
+                                    <label for="name">Your Name</label>
+                                    <input type="text" id="name" class="form-control form-control-lg register-input"
+                                           placeholder="Your Name" th:field="*{name}">
+                                </div>
+                                <div class="form-group">
+                                    <span style="color: red" class="register-errors" th:errors="*{email}"></span><br/>
+                                    <label for="email">Email address</label>
+                                    <input type="email" id="email" class="form-control form-control-lg register-input"
+                                           placeholder="Email" th:field="*{email}">
+                                </div>
+                                <div class="form-group">
+                                    <span style="color: red" th:errors="*{password}" class="register-errors"></span><br/>
+                                    <label for="password">Password</label>
+                                    <input type="password" id="password" class="form-control form-control-lg register-input"
+                                           placeholder="Password" th:field="*{password}">
+                                </div>
+                                <div class="form-group">
+                                    <span style="color: red" th:errors="*{image}" class="register-errors"></span><br/>
+                                    <input  type="file" th:field="*{image}" id="file" class="inputfile register-input" />
+                                    <label style="cursor: pointer" for="file" >Choose a photo</label><br/>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-lg">Register</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div></div>
+                </div>
+
+                <div class="col-md-6 col-lg-5 col-xl-4">
+                    <div class="socal-login-buttons"><a href="signin.html#"
+                                                        class="btn btn-social btn-block btn-facebook">
+                        <i class="icon fa fa-facebook"></i> Continue with Facebook</a>
+                        <a href="signin.html#" class="btn btn-social btn-block btn-twitter">
+                            <i class="icon fa fa-twitter"></i> Continue with Twitter</a>
+                        <a href="signin.html#" class="btn btn-social btn-block btn-google">
+                            <i class="icon fa fa-google"></i> Continue with Google</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+            <button class="btn btn-primary btn-circle" id="to-top"><i class="fa fa-angle-up"></i></button>
+            <footer id="footer" class="bg-light footer-light">
+                <div class="container container-1000">
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <p><span class="icon-uilove icon-uilove-realestate"></span></p>
+                            <address class="mb-3">
+                                <strong>Twitter, Inc.</strong><br>
+                                1355 Market Street, Suite 900<br>
+                                San Francisco, CA 94103<br>
+                                <abbr title="Phone">P:</abbr> (123) 456-7890
+                            </address>
+                            <div class="footer-social mb-4">
+                                <a href="https://www.twitter.com" class="ml-2 mr-2"><span
+                                        class="fa fa-twitter"></span></a> <a href="https://www.facebook.com" class="ml-2 mr-2"><span
+                                    class="fa fa-facebook"></span></a> <a href="https://www.instagram.com" class="ml-2 mr-2"><span
+                                    class="fa fa-instagram"></span></a></div>
+                        </div>
+                    </div>
+                    <div class="footer-credits d-lg-flex justify-content-lg-between align-items-center">
+                        <div>© 2018 UILOVE Inc. All Rights Reserved</div>
+                    </div>
+                </div>
+            </footer>
+</div>
+</body>
+</html>

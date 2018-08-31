@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta id="page" content="0">
+    <meta th:if="${currentUser eq null} or ${#strings.equals(currentUser.userType,'USER')}" id="role" content="USER">
+    <meta th:if="${currentUser ne null} and ${#strings.equals(currentUser.userType,'ADMIN')}" id="role" content="ADMIN">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Real Estate</title>
+
+    <!-- Bootstrap -->
+    <link href="https://fonts.googleapis.com/css?family=Libre+Franklin:100,200,300,400,500,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/lib/animate.css" rel="stylesheet">
+    <link href="/lib/selectric/selectric.css" rel="stylesheet">
+    <link href="/lib/aos/aos.css" rel="stylesheet">
+    <link href="/lib/Magnific-Popup/magnific-popup.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="/lib/jquery-3.2.1.min.js"></script>
+    <script src="/lib/popper.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/lib/selectric/jquery.selectric.js"></script>
+    <script src="/lib/aos/aos.js"></script>
+    <script src="/lib/Magnific-Popup/jquery.magnific-popup.min.js"></script>
+    <script src="/lib/sticky-sidebar/ResizeSensor.min.js"></script>
+    <script src="/lib/sticky-sidebar/theia-sticky-sidebar.min.js"></script>
+    <script src="/lib/lib.js"></script>
+
+</head>
+<body>
+<div id="main">
+    <nav class="navbar navbar-expand-lg navbar-dark" id="menu">
+        <div class="container">
+            <a class="navbar-brand" href="index.html"><span class="icon-uilove icon-uilove-realestate"></span></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#menu-content"
+                    aria-controls="menu-content" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="menu-content">
+                <ul th:if="${currentUser eq null} or ${#strings.equals(currentUser.userType,'USER')}" class="navbar-nav mr-auto">
+                    <li class="nav-item ">
+                        <a class="nav-link" href="/" >
+                            Home
+                        </a>
+
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link " href="/listings">
+                            Listings
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " href="/users" >
+                            Users
+                        </a>
+                    </li>
+                    <li th:if="${currentUser eq null}" class="nav-item ">
+                        <a class="nav-link " href="/signIn">
+                            Login/Register
+                        </a>
+                    </li>
+                </ul>
+                <ul th:if="${currentUser ne null} and ${#strings.equals(currentUser.userType,'ADMIN')}" class="navbar-nav mr-auto">
+                    <li class="nav-item ">
+                        <a class="nav-link" href="/users" >
+                            Home
+                        </a>
+
+                    </li>
+                </ul>
+                    <ul class="navbar-nav ml-auto">
+
+                    <li class="nav-item dropdown user-account" th:if="${currentUser != null}">
+                        <a class="nav-link dropdown-toggle" href="/user/profile" role="button" data-toggle="dropdown"
+                           aria-haspopup="true" aria-expanded="false">
+                            <span class="user-image" th:style="'background-image:url(/users/' + ${currentUser.picUrl} +')'"></span>
+                            <span th:text="${currentUser.name}">name</span>
+                        </a>
+                        <div class="dropdown-menu">
+                            <a th:if="${#strings.equals(currentUser.userType,'USER')}" href="/user/profile" class="dropdown-item">My profile</a>
+                            <a href="/logout" class="dropdown-item">Logout</a>
+                        </div>
+                    </li>
+                    <li th:if="${currentUser eq null} or ${#strings.equals(currentUser.userType,'USER')}" class="nav-item"><a class="nav-link nav-btn" href="/listing/add"><span><i
+                            class="fa fa-plus" aria-hidden="true"></i> Add listing</span></a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row justify-content-md-center">
+            <div class="col col-md-10">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <div id="content">
+        <div class="container">
+            <div class="row justify-content-md-center">
+                <div class="col col-lg-12 col-xl-10">
+                    <div class="row has-sidebar">
+                        <div class="col-md-7 col-lg-8 col-xl-8">
+                            <div class="page-header bordered mt0">
+                                <h1>Agents
+                                    <small>Save the hassle. Choose from over 20,000+ Agents</small>
+                                </h1>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div id="user-blog" class="item-listing list">
+                                <th:block th:each="user : ${users}" th:if="${#strings.equals(user.userType,'USER')} and (${currentUser eq null} or ${currentUser.id} ne ${user.id})">
+                                    <div th:id="${user.id} +'-div'" class="item">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="item-image">
+                                                    <img  th:src="@{/users/{img}(img = ${user.picUrl})}" class="img-fluid" alt=""></div>
+                                            </div>
+                                            <div class="col-md-9">
+                                                <a th:if="${currentUser eq null} or ${#strings.equals(currentUser.userType,'USER')} "
+                                                   th:href="@{/user/{id}(id = ${user.id})}" class="btn btn-primary float-right">View Profile</a>
+                                                <a th:if="${currentUser ne null} and ${#strings.equals(currentUser.userType,'ADMIN')} "
+                                                   th:id="${user.id}" class="btn btn-primary float-right delete-user">Delete</a>
+                                                <h3 class="item-title">
+                                                    <a th:href="@{/user/{id}(id = ${user.id})}" th:text="${user.name}">John Doe - John Estate</a>
+                                                </h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </th:block>
+                            </div>
+                            <p th:if="(${#lists.size(users) > 0} and ${currentUser eq null}) or (${#lists.size(users) > 0} and ${currentUser.id} ne ${users[0].id})">
+                                <a id="load-more" style="cursor: pointer" class="btn btn-lg btn-link btn-block">Load More
+                                    <i class="fa fa-caret-down"></i>
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button class="btn btn-primary btn-circle" id="to-top"><i class="fa fa-angle-up"></i></button>
+    <footer id="footer" class="bg-light footer-light">
+        <div class="container container-1000">
+            <div class="row">
+                <div class="col-lg-3">
+                    <p><span class="icon-uilove icon-uilove-realestate"></span></p>
+                    <address class="mb-3">
+                        <strong>Twitter, Inc.</strong><br>
+                        1355 Market Street, Suite 900<br>
+                        San Francisco, CA 94103<br>
+                        <abbr title="Phone">P:</abbr> (123) 456-7890
+                    </address>
+                    <div class="footer-social mb-4">
+                        <a href="https://www.twitter.com" class="ml-2 mr-2"><span
+                                class="fa fa-twitter"></span></a> <a href="https://www.facebook.com" class="ml-2 mr-2"><span
+                            class="fa fa-facebook"></span></a> <a href="https://www.instagram.com" class="ml-2 mr-2"><span
+                            class="fa fa-instagram"></span></a></div>
+                </div>
+            </div>
+            <div class="footer-credits d-lg-flex justify-content-lg-between align-items-center">
+                <div>© 2018 UILOVE Inc. All Rights Reserved</div>
+            </div>
+        </div>
+    </footer>
+</div>
+<script src="/js/users.js"></script>
+</body>
+</html>

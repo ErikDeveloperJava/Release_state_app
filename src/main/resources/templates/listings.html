@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Real Estate</title>
+
+    <!-- Bootstrap -->
+    <link href="https://fonts.googleapis.com/css?family=Libre+Franklin:100,200,300,400,500,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/lib/animate.css" rel="stylesheet">
+    <link href="/lib/selectric/selectric.css" rel="stylesheet">
+    <link href="/lib/aos/aos.css" rel="stylesheet">
+    <link href="/lib/Magnific-Popup/magnific-popup.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="/lib/jquery-3.2.1.min.js"></script>
+    <script src="/lib/popper.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/lib/selectric/jquery.selectric.js"></script>
+    <script src="/lib/aos/aos.js"></script>
+    <script src="/lib/Magnific-Popup/jquery.magnific-popup.min.js"></script>
+    <script src="/lib/sticky-sidebar/ResizeSensor.min.js"></script>
+    <script src="/lib/sticky-sidebar/theia-sticky-sidebar.min.js"></script>
+    <script src="/lib/sidr/jquery.sidr.min.js"></script>
+    <script src="/lib/lib.js"></script>
+
+</head>
+<body>
+<div id="main">
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-over absolute-top" id="menu">
+        <div class="container">
+            <a class="navbar-brand" href="index.html"><span class="icon-uilove icon-uilove-realestate"></span></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#menu-content"
+                    aria-controls="menu-content" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="menu-content">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item ">
+                        <a class="nav-link" href="/">
+                            Home
+                        </a>
+
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link " href="/listings">
+                            Listings
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " href="/users">
+                            Users
+                        </a>
+                    </li>
+                    <li th:if="${currentUser eq null}" class="nav-item ">
+                        <a class="nav-link " href="/signIn">
+                            Login/Register
+                        </a>
+                    </li>
+                </ul>
+
+                <ul class="navbar-nav ml-auto">
+
+                    <li class="nav-item dropdown user-account" th:if="${currentUser != null}">
+                        <a class="nav-link dropdown-toggle" href="/user/profile" role="button" data-toggle="dropdown"
+                           aria-haspopup="true" aria-expanded="false">
+                            <span class="user-image"
+                                  th:style="'background-image:url(/users/' + ${currentUser.picUrl} +')'"></span>
+                            <span th:text="${currentUser.name}">name</span>
+                        </a>
+                        <div class="dropdown-menu">
+                            <a href="/user/profile" class="dropdown-item">My profile</a>
+                            <a href="/logout" class="dropdown-item">Logout</a>
+                        </div>
+                    </li>
+                    <li class="nav-item"><a class="nav-link nav-btn" href="/listing/add"><span><i
+                            class="fa fa-plus" aria-hidden="true"></i> Add listing</span></a></li>
+                </ul>
+
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="search-form">
+            <div class="card">
+                <div class="row">
+                    <div class="col-lg-6">
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="row">
+                            <div class="col-sm-7">
+                                <div class="form-group">
+                                </div>
+                            </div>
+                            <div class="col-sm-5">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row justify-content-md-center">
+            <div class="col col-lg-12 col-xl-10">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                    </ol>
+                </nav>
+                <div class="page-header">
+                    <h1 th:text="${title}"></h1>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="content">
+        <div class="container">
+            <div class="row justify-content-md-center">
+                <div class="col col-lg-12 col-xl-10">
+                    <div class="row has-sidebar">
+
+                        <div class="col-md-8 col-lg-9">
+                            <div class="sorting">
+                                <div class="row justify-content-between">
+                                    <div class="col-sm-5 col-md-5 col-lg-4 col-xl-3">
+                                        <div class="col-sm-6 col-md-5 col-lg-4 col-xl-3">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                                <div class="item-listing list">
+                                    <th:block th:each="listing : ${listings}">
+                                        <div class="item">
+                                            <div class="row">
+                                                <div class="col-lg-5">
+                                                    <div class="item-image">
+                                                        <a th:href="@{/listing/{id}(id = ${listing.id})}">
+                                                            <img th:src="@{/listings/{img}(img = ${listing.picUrl})}" class="img-fluid" alt="">
+                                                        <div class="item-badges">
+                                                            <div class="item-badge-right" th:text="'For ' + ${#strings.toLowerCase(listing.listingType)}">For Sale</div>
+                                                        </div>
+                                                        <div class="item-meta">
+                                                            <div class="item-price" th:text="${listing.price}">
+                                                                $420,000
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                        <a th:href="@{/listing/{id}(id = ${listing.id})}" class="save-item">
+                                                            <i class="fa fa-star"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-7">
+                                                    <div class="item-info">
+                                                        <h3 class="item-title">
+                                                            <a th:href="@{/listing/{id}(id = ${listing.id})}" th:text="${listing.title}"></a></h3>
+                                                        <div class="item-location"><i class="fa fa-map-marker"></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </th:block>
+                                </div>
+                                <nav th:if="${#lists.size(listings) > 0}" aria-label="Page navigation">
+                                    <ul class="pagination">
+                                        <li class="page-item" th:if="${pageNumber == 0}">
+                                            <a class="page-link">&laquo;</a>
+                                        </li>
+                                        <li class="page-item" th:if="${pageNumber > 0} and ${#request.getParameter('title') ne null}">
+                                            <a class="page-link" th:href="@{${#request.getRequestURI()}(page=${pageNumber},title=${#request.getParameter('title')})}">&laquo;</a>
+                                        </li>
+                                        <li class="page-item" th:if="${pageNumber > 0} and ${#request.getParameter('title') eq null}">
+                                            <a class="page-link" th:href="@{${#request.getRequestURI()}(page=${pageNumber})}">&laquo;</a>
+                                        </li>
+                                        <th:block th:each="index : ${#numbers.sequence(0,length-1)}">
+                                            <li class="page-item active" th:if="${pageNumber} eq ${index}">
+                                                <a class="page-link" th:text="${pageNumber + 1}">page number</a>
+                                            </li>
+                                            <li class="page-item" th:if="${pageNumber} ne ${index} and ${#request.getParameter('title') ne null}">
+                                                <a class="page-link" th:href="@{${#request.getRequestURI()}(page=${index + 1},title=${#request.getParameter('title')})}" th:text="${index +1}">page number</a>
+                                            </li>
+                                            <li class="page-item" th:if="${pageNumber} ne ${index} and ${#request.getParameter('title') eq null}">
+                                                <a class="page-link" th:href="@{${#request.getRequestURI()}(page=${index + 1})}" th:text="${index +1}">page number</a>
+                                            </li>
+                                        </th:block>
+
+                                        <li class="page-item" th:if="${pageNumber} eq ${length-1}">
+                                            <a class="page-link">&raquo;</a>
+                                        </li>
+                                        <li class="page-item" th:if="${pageNumber} < ${length-1} and ${#request.getParameter('title') ne null}">
+                                            <a class="page-link" th:href="@{${#request.getRequestURI()}(page=${pageNumber + 2},title=${#request.getParameter('title')})}">&raquo;</a>
+                                        </li>
+                                        <li class="page-item" th:if="${pageNumber} < ${length-1} and ${#request.getParameter('title') eq null}">
+                                            <a class="page-link" th:href="@{${#request.getRequestURI()}(page=${pageNumber + 2})}">&raquo;</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Contact Agent Modal -->
+        <button class="btn btn-primary btn-circle" id="to-top"><i class="fa fa-angle-up"></i></button>
+        <footer id="footer" class="bg-light footer-light">
+            <div class="container container-1000">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <p><span class="icon-uilove icon-uilove-realestate"></span></p>
+                        <address class="mb-3">
+                            <strong>Twitter, Inc.</strong><br>
+                            1355 Market Street, Suite 900<br>
+                            San Francisco, CA 94103<br>
+                            <abbr title="Phone">P:</abbr> (123) 456-7890
+                        </address>
+                        <div class="footer-social mb-4">
+                            <a href="https://www.twitter.com" class="ml-2 mr-2"><span
+                                    class="fa fa-twitter"></span></a> <a href="https://www.facebook.com" class="ml-2 mr-2"><span
+                                class="fa fa-facebook"></span></a> <a href="https://www.instagram.com" class="ml-2 mr-2"><span
+                                class="fa fa-instagram"></span></a></div>
+                    </div>
+                </div>
+                <div class="footer-credits d-lg-flex justify-content-lg-between align-items-center">
+                    <div>© 2018 UILOVE Inc. All Rights Reserved</div>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $('#toggle-filters').sidr({
+                side: 'left',
+                displace: false,
+                renaming: false,
+                name: 'sidebar',
+                source: function () {
+                    AOS.refresh();
+                },
+
+            });
+        });
+    </script>
+</body>
+</html>
